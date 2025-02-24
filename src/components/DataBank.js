@@ -1,6 +1,6 @@
 import { useReducer, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Button, Card, Container, Divider, Dropdown, Form, Grid, Header, Icon, Modal, Segment } from "semantic-ui-react"
+import { TransitionablePortal, Button, Card, Container, Divider, Dropdown, Form, Grid, Header, Icon, Modal, Segment, DropdownMenu } from "semantic-ui-react"
 import { useCreateFolderMutation, useGetfoldersQuery } from "../features/api/apiSlice"
 import { mastaplana_file } from "../API"
 import { GradientDirection } from "@cloudinary/url-gen/qualifiers"
@@ -91,14 +91,25 @@ export const DataBank = ({mobile}) => {
 
     }
 
+    const [open_portal, setopen_portal] = useState(false)
+
+    const handleopenPortal = () => setopen_portal(true)
+
+    const handleclosePortal = () => setopen_portal(false)
+
     const {data:folders, isSuccess} = useGetfoldersQuery()
     let folderList
     if(isSuccess){
         folderList = folders.map(f => (
                 <Grid.Column width={4}>
                     <Card>
-                        <Card.Header >
-                            <Icon disabled style={{float: 'right'}} size="small" name="ellipsis vertical" />
+                        <Card.Header style={{border: 0}} > 
+                            <Dropdown simple style={{float: 'right'}} icon="ellipsis vertical">
+                                <Dropdown.Menu>
+                                    <Dropdown.Item text="open" icon="folder" />
+                                    <Dropdown.Item text="upload" icon="upload" />
+                                </Dropdown.Menu>
+                            </Dropdown>       
                         </Card.Header>
                         <Card.Content>
                             <Icon name="folder" size="big" inverted color="green" />
@@ -110,7 +121,6 @@ export const DataBank = ({mobile}) => {
         
         ))
     }
-
 
     return(
         <Container>
