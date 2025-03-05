@@ -172,7 +172,17 @@ export const apiSlice = createApi({
         }),
         getfolders: builder.query({
             query: () => '/create_folders'
-        })
+        }),
+        uploadFiletoFolder: builder.mutation({
+            query: item => ({
+                url: 'upload_file_to_folders/',
+                method: 'POST',
+                body: item
+            }),
+        }),
+        getUploadFiletoFolder: builder.query({
+            query: () => '/upload_file_to_folders'
+        }),
     })
     
 })
@@ -192,6 +202,6 @@ export const {
     useRemoveMemberMutation,
     useAcceptMembershipMutation, useDeclineMembershipMutation,
     useSetAlarmMutation, useGetAlarmsQuery, useRemoveAlarmMutation,
-    useCreateFolderMutation, useGetfoldersQuery
-    
+    useCreateFolderMutation, useGetfoldersQuery,
+    useUploadFiletoFolderMutation, useGetUploadFiletoFolderQuery
 } = apiSlice
