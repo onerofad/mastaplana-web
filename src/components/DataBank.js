@@ -166,16 +166,11 @@ export const DataBank = ({mobile}) => {
         fileToFolderList = fileToFolder.map(f => (
             <Grid.Row>
                 <Grid.Column>
-                    <Card>
-                        <Card.Content>
-                            <Icon name="file" size="big" inverted color="green" />
-                            {f.folder_name}
-                        </Card.Content>
-                    </Card>
-                  
+                    <Segment vertical>
+                        <Icon name="file" size="large" inverted color="green" />
+                        {f.fileName}
+                    </Segment>
                 </Grid.Column>
-                <br/>
-
             </Grid.Row>
            
         ))
@@ -187,19 +182,20 @@ export const DataBank = ({mobile}) => {
 
     const [file, setFile] = useState(null)
 
+    const [fileName, setfileName] = useState("")
+
     const [check, setcheck]  = useState("")
 
     const [fileError, setfileError] = useState(false)
 
     let uploaded_link
     const [uploadFile] = useUploadFiletoFolderMutation()
-    const uploadSave = [folder_id, folder_name, folder_owner].every(Boolean) && !isLoading
-
+    const uploadSave = [folder_id, folder_name, folder_owner, fileName].every(Boolean) && !isLoading
 
     const handlefileupload = (e) => {
         const f = e.target.files[0]
         setFile(f)
-        const fr = new FileReader();
+        setfileName(f.name);
     }
 
     const uploadBtn = async () => {
@@ -228,7 +224,7 @@ export const DataBank = ({mobile}) => {
                     const res = await response.json();
                     fileURL = res.url.toString()
                     uploaded_link = fileURL
-                        await uploadFile({folder_id, folder_name, folder_owner, uploaded_link}).unwrap()
+                        await uploadFile({folder_id, folder_name, folder_owner, uploaded_link, fileName}).unwrap()
                         setFile(null)
                         setloading(false)
                         setcheck("check")
@@ -367,10 +363,10 @@ export const DataBank = ({mobile}) => {
                                                             <Icon name="folder" />
                                                             All Folders ({folder.length})
                                                         </Grid.Column>
-                                                        <Grid.Column width={6}>
+                                                        {/*<Grid.Column width={6}>
                                                             <Icon name="refresh" />
                                                             Refresh
-                                                        </Grid.Column>
+                                                        </Grid.Column>*/}
                                                     <Divider />
                                                 </Grid.Row>
                                                 <Grid.Row columns={4}>
