@@ -1,10 +1,7 @@
 import { useReducer, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Form, Button, Label, Card, Container, Dropdown, Menu, Header, Grid, Icon, Modal, Segment, Divider } from "semantic-ui-react"
+import { Form, Button, Card, Container, Dropdown, Label, Menu, Header, Grid, Icon, Modal, Segment, List } from "semantic-ui-react"
 import { useCreateFolderMutation, useGetfoldersQuery, useGetUploadFiletoFolderQuery, useUploadFiletoFolderMutation } from "../features/api/apiSlice"
-import { mastaplana_file } from "../API"
-import { GradientDirection } from "@cloudinary/url-gen/qualifiers"
-import { justify } from "@cloudinary/url-gen/qualifiers/textAlignment"
 
 const initialState = {
     size: undefined,
@@ -116,7 +113,7 @@ export const DataBank = ({mobile}) => {
 
     const [folder_count, setfolder_count] = useState(0)
 
-    const {data:folders, isSuccess} = useGetfoldersQuery()
+    const {data:folders, isSuccess, isFetching} = useGetfoldersQuery()
 
     const [createfolder_open, setcreatefolder_open] = useState(false)
 
@@ -127,8 +124,8 @@ export const DataBank = ({mobile}) => {
         folderList = folder.map(f => (
                 <Grid.Column>
                     <Card fluid>
-                        <Card.Header style={{border: 0}} > 
-                            <Dropdown simple style={{float: 'right'}} icon="ellipsis vertical">
+                        {/*<Card.Header style={{border: 0}} > 
+                            <Dropdown simple style={{float: 'right'}}>
                                 <Dropdown.Menu>
                                     <Dropdown.Item text="upload" icon="upload"
                                         onClick={() => upload_open(f.id, f.f_name)}
@@ -139,8 +136,19 @@ export const DataBank = ({mobile}) => {
                                     />
                                 </Dropdown.Menu>
                             </Dropdown>       
-                        </Card.Header>
+                        </Card.Header>*/}
                         <Card.Content>
+                        <Dropdown simple style={{float: 'right'}}>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item text="upload" icon="upload"
+                                        onClick={() => upload_open(f.id, f.f_name)}
+
+                                    />
+                                    <Dropdown.Item text="open" icon="folder"
+                                        onClick={() => open_folder(f.id, f.f_name)}
+                                    />
+                                </Dropdown.Menu>
+                            </Dropdown>
                             <Icon name="folder" size="big" inverted color="green" />
                             {f.f_name}
                         </Card.Content>
@@ -164,19 +172,16 @@ export const DataBank = ({mobile}) => {
     if(isSuccess){
         const fileToFolder = folder_files.filter(f => f.folder_id === folder_id)
         fileToFolderList = fileToFolder.map(f => (
-            <Grid.Row>
-                <Grid.Column>
-                    <Segment vertical>
-                        <Icon name="file" size="large" inverted color="green" />
-                        {f.fileName}
-                    </Segment>
-                </Grid.Column>
-            </Grid.Row>
-           
+            <List.Item>
+                <List.Icon name="file" size="large" verticalAlign="middle" color="green" />
+                <List.Content>
+                    <List.Header>{f.fileName}</List.Header>
+                    <List.Description> {f.fileSize/1000} mb</List.Description>
+                </List.Content>
+            </List.Item>   
         ))
     }
     
-
     const [activeItem, setactiveItem] = useState("Home")
     const handleItemClick = (e, {name}) => setactiveItem(name.value)
 
@@ -184,18 +189,27 @@ export const DataBank = ({mobile}) => {
 
     const [fileName, setfileName] = useState("")
 
+    const [fileSize, setfileSize] = useState(0)
+
+    const [fileType, setfileType] = useState("")
+
+    const [lastModifiedDate, setlastModifiedDate] = useState("")
+
     const [check, setcheck]  = useState("")
 
     const [fileError, setfileError] = useState(false)
 
     let uploaded_link
     const [uploadFile] = useUploadFiletoFolderMutation()
-    const uploadSave = [folder_id, folder_name, folder_owner, fileName].every(Boolean) && !isLoading
+    const uploadSave = [folder_id, folder_name, folder_owner, fileName, fileSize, fileType, lastModifiedDate].every(Boolean) && !isLoading
 
     const handlefileupload = (e) => {
         const f = e.target.files[0]
         setFile(f)
         setfileName(f.name);
+        setfileSize(f.size)
+        setfileType(f.type)
+        setlastModifiedDate(f.lastModifiedDate)
     }
 
     const uploadBtn = async () => {
@@ -224,7 +238,7 @@ export const DataBank = ({mobile}) => {
                     const res = await response.json();
                     fileURL = res.url.toString()
                     uploaded_link = fileURL
-                        await uploadFile({folder_id, folder_name, folder_owner, uploaded_link, fileName}).unwrap()
+                        await uploadFile({folder_id, folder_name, folder_owner, uploaded_link, fileName, fileSize, fileType, lastModifiedDate}).unwrap()
                         setFile(null)
                         setloading(false)
                         setcheck("check")
@@ -290,20 +304,22 @@ export const DataBank = ({mobile}) => {
                     </Grid.Row> 
                     <Grid.Row>
                         <Grid.Column>
-                                <Segment vertical style={{maxHeight: 500, padding: 20, borderRadius: 10, backgroundColor: '#fff'}}>
+                                <Segment vertical style={{padding: 20, borderRadius: 10, backgroundColor: '#fff'}}>
                                 <Grid divided>
                                     <Grid.Row>
-                                        <Grid.Column width={4}>
-                                            <Header dividing as="h4" content="Media Assets" />
-                                            <Menu size="small" secondary vertical>
+                                        <Grid.Column width={3}>
+                                            <Header dividing as="h2" content="Media" />
+                                            <Menu secondary vertical>
                                                 <Menu.Item 
                                                     name="Home" 
-                                                    icon="home"
+                                                    as="h4"
+                                                    header
                                                     onClick={() => setcreatefolder_open(false)}
                                                 />
                                                 <Menu.Item 
-                                                    name="Create Folders" 
-                                                    icon="folder"
+                                                    name="Create Folders"
+                                                    as="h4" 
+                                                    header
                                                     onClick={() => setcreatefolder_open(true)}       
                                                 />
 
@@ -314,7 +330,7 @@ export const DataBank = ({mobile}) => {
                                             <Grid>
                                                <Grid.Row>
                                                 <Grid.Column>
-                                                    <Header dividing textAlign="center" as="h4" content="Data Folders" />
+                                                    <Header dividing textAlign="center" as="h2" content="Data Folders" />
                                                 </Grid.Column>
                                                 </Grid.Row>
                                                 {
@@ -322,8 +338,12 @@ export const DataBank = ({mobile}) => {
                                                     <Grid>
                                                     <Grid.Row>
                                                         <Grid.Column>
-                                                            <Icon name="folder" />
-                                                            Create Folder
+                                                            <Header>
+                                                                <Icon name="folder" />
+                                                                <Header.Content>
+                                                                    Create Folder
+                                                                </Header.Content>
+                                                            </Header>
                                                         </Grid.Column>
                                                     </Grid.Row>
                                                     <Grid.Row>
@@ -357,17 +377,19 @@ export const DataBank = ({mobile}) => {
                                                 </Grid> 
                                                 :
                                                 <Grid>
-                                                <Grid.Row>
-                                                    <Divider />
-                                                        <Grid.Column width={6}>
+                                                <Grid.Row>  
+                                                    <Grid.Column>
+                                                        <Header as="h4">
                                                             <Icon name="folder" />
-                                                            All Folders ({folder.length})
-                                                        </Grid.Column>
-                                                        {/*<Grid.Column width={6}>
-                                                            <Icon name="refresh" />
+                                                            <Header.Content>
+                                                                All Folders ({folder.length})
+                                                            </Header.Content>
+                                                        </Header>
+                                                    </Grid.Column>
+                                                    {/*<Grid.Column width={6}>
+                                                        <Icon name="refresh" />
                                                             Refresh
-                                                        </Grid.Column>*/}
-                                                    <Divider />
+                                                    </Grid.Column>*/}
                                                 </Grid.Row>
                                                 <Grid.Row columns={4}>
                                                     {folderList}
@@ -376,12 +398,40 @@ export const DataBank = ({mobile}) => {
                                                 }
                                             </Grid> 
                                         </Grid.Column>
-                                        <Grid.Column width={4}>
+                                        <Grid.Column width={5}>
                                             
-                                            <Header dividing as="h4" textAlign="center" content="Folder Assets" />
+                                            <Header dividing as="h2" textAlign="center" content="Folder Assets" />
                                                 {assets ?
-                                                    fileToFolderList
-                                                    : 'No Folder Opened'
+                                                
+                                                    <Grid>
+                                                    <Grid.Row>
+                                                        <Grid.Column>
+                                                            <Header as="h4">
+                                                                <Icon name="folder open" />
+                                                                <Header.Content>
+                                                                    {folder_name}/
+                                                                </Header.Content>
+                                                            </Header>
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                    <Grid.Row>
+                                                        <Grid.Column>
+                                                            <List relaxed="very" ordered divided verticalAlign="middle">
+                                                                {fileToFolderList}
+                                                            </List>
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                    </Grid>
+                                                
+                                                    : <Grid.Column>
+                                                        <Header as="h4">
+                                                            <Icon name="folder" />
+                                                            <Header.Content>
+                                                                No Folder Opened
+                                                            </Header.Content>
+                                                        </Header>
+                                                      </Grid.Column>
+                                
                                                 }
                                               
                                            
