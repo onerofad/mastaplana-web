@@ -440,7 +440,7 @@ export const DataBank = ({mobile}) => {
                                                     <Grid>
                                                     <Grid.Row>
                                                         <Grid.Column>
-                                                            <Header>
+                                                            <Header as={mobile ? "h5" : "h4"}>
                                                                 <Icon name="folder" />
                                                                 <Header.Content>
                                                                     Create Folder
@@ -482,7 +482,7 @@ export const DataBank = ({mobile}) => {
                                                 <Grid.Row>  
                                                     <Grid.Column>
                                                         <Header as={mobile ? "h5" : "h4"}>
-                                                            {mobile ? '' : <Icon name="folder" /> }
+                                                            <Icon name="folder" /> 
                                                             <Header.Content>
                                                                 All Folders ({folder.length})
                                                             </Header.Content>
