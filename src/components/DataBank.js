@@ -101,7 +101,7 @@ export const DataBank = ({mobile}) => {
                       await createFolder({f_name, f_owner, f_link}).unwrap()
                       setdummy_file(null)
                       setloading(false)
-                      dispatch({type: 'open', size: 'tiny'})
+                      dispatch({type: 'open', size: 'mini'})
 
                 //}
             }catch(error){
@@ -120,7 +120,7 @@ export const DataBank = ({mobile}) => {
     const upload_open = (id, foldername) => {
         setfolder_id(id)
         setfolder_name(foldername)
-        dispatch({type: 'open_upload', size_upload: 'tiny'})
+        dispatch({type: 'open_upload', size_upload: 'mini'})
     }
 
     const {data:folders, isSuccess} = useGetfoldersQuery()
@@ -198,7 +198,7 @@ export const DataBank = ({mobile}) => {
         setfile_size(fsize)
         setfile_link(flink)
     
-        dispatch({type: 'open_file', size_file: 'tiny'})
+        dispatch({type: 'open_file', size_file: 'mini'})
     }
 
     const [fold_name, setfold_name] = useState("")
@@ -207,13 +207,13 @@ export const DataBank = ({mobile}) => {
     const open_delete_btn = (id, fname) => {
         setfile_id(id)
         setfile_name(fname)
-        dispatch({type: 'open_delete', size_delete: "tiny"})
+        dispatch({type: 'open_delete', size_delete: "mini"})
     }
 
     const open_delete_folder = (id, fname) => {
         setfold_id(id)
         setfold_name(fname)
-        dispatch({type: 'open_delete_fold', size_delete_fold: "tiny"})
+        dispatch({type: 'open_delete_fold', size_delete_fold: "mini"})
     }
 
     if(isSuccess){
@@ -500,7 +500,7 @@ export const DataBank = ({mobile}) => {
                                                 }
                                             </Grid> 
                                         </Grid.Column>
-                                        <Grid.Column width={mobile ? 16 : 5}>
+                                        <Grid.Column style={{marginTop: mobile ? 20 : 0}} width={mobile ? 16 : 5}>
                                             <Header dividing as={mobile ? "h4" : "h2"} textAlign="center" content={mobile ? "Folder Assets" : "Folder Assets"} />
                                                 {assets ?        
                                                     <Grid>
