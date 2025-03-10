@@ -409,7 +409,7 @@ export const DataBank = ({mobile}) => {
                                 <Segment vertical style={{padding: 20, borderRadius: 10, backgroundColor: '#fff'}}>
                                 <Grid divided>
                                     <Grid.Row>
-                                        <Grid.Column width={mobile ? 3 : 3}>
+                                        <Grid.Column width={mobile ? 4 : 3}>
                                             <Header dividing as={mobile ? "h5" : "h2"} content="Media" />
                                             <Menu size={mobile ? "mini" : ''} secondary vertical>
                                                 <Menu.Item 
@@ -428,7 +428,7 @@ export const DataBank = ({mobile}) => {
                                             </Menu>
                                            
                                         </Grid.Column>
-                                        <Grid.Column width={mobile ? 6 : 8}>
+                                        <Grid.Column width={mobile ? 12 : 8}>
                                             <Grid>
                                                <Grid.Row>
                                                 <Grid.Column>
@@ -493,14 +493,18 @@ export const DataBank = ({mobile}) => {
                                                             Refresh
                                                     </Grid.Column>*/}
                                                 </Grid.Row>
-                                                <Grid.Row columns={mobile ? 1 : 4}>
+                                                <Grid.Row columns={mobile ? 2 : 4}>
                                                     {folderList}
                                                 </Grid.Row>
                                                 </Grid>
                                                 }
                                             </Grid> 
                                         </Grid.Column>
-                                        <Grid.Column width={mobile ? 7 : 5}>
+
+                                        {mobile ? 
+                                        <Grid></Grid>
+                                        :
+                                        <Grid.Column width={5}>
                                             
                                             <Header dividing as={mobile ? "h5" : "h2"} textAlign="center" content={mobile ? "Assets" : "Folder Assets"} />
                                                 {assets ?
@@ -538,6 +542,7 @@ export const DataBank = ({mobile}) => {
                                               
                                            
                                         </Grid.Column>
+                                    }
                                     </Grid.Row>
                                 </Grid>
 
