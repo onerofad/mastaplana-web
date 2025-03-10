@@ -482,7 +482,7 @@ export const DataBank = ({mobile}) => {
                                                 <Grid.Row>  
                                                     <Grid.Column>
                                                         <Header as={mobile ? "h5" : "h4"}>
-                                                            <Icon name="folder" />
+                                                            {mobile ? '' : <Icon name="folder" /> }
                                                             <Header.Content>
                                                                 All Folders ({folder.length})
                                                             </Header.Content>
@@ -493,7 +493,7 @@ export const DataBank = ({mobile}) => {
                                                             Refresh
                                                     </Grid.Column>*/}
                                                 </Grid.Row>
-                                                <Grid.Row columns={mobile ? 2 : 4}>
+                                                <Grid.Row columns={mobile ? 1 : 4}>
                                                     {folderList}
                                                 </Grid.Row>
                                                 </Grid>
@@ -527,7 +527,7 @@ export const DataBank = ({mobile}) => {
                                                 
                                                     : <Grid.Column>
                                                         <Header as={mobile ? "h5" : "h4"}>
-                                                            <Icon name="folder" />
+                                                            {mobile ? '' : <Icon name="folder" /> }
                                                             <Header.Content>
                                                                 {mobile ? "No folder" : "No Folder Opened"}
                                                             </Header.Content>
