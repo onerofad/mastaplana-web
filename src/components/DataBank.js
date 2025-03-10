@@ -409,9 +409,9 @@ export const DataBank = ({mobile}) => {
                                 <Segment vertical style={{padding: 20, borderRadius: 10, backgroundColor: '#fff'}}>
                                 <Grid divided>
                                     <Grid.Row>
-                                        <Grid.Column width={3}>
-                                            <Header dividing as="h2" content="Media" />
-                                            <Menu secondary vertical>
+                                        <Grid.Column width={mobile ? 4 : 3}>
+                                            <Header dividing as={mobile ? "h5" : "h2"} content="Media" />
+                                            <Menu size={mobile ? "small" : ''} secondary vertical>
                                                 <Menu.Item 
                                                     name="Home" 
                                                     as="h4"
@@ -419,7 +419,7 @@ export const DataBank = ({mobile}) => {
                                                     onClick={() => setcreatefolder_open(false)}
                                                 />
                                                 <Menu.Item 
-                                                    name="Create Folders"
+                                                    name= {mobile ? "Add Folder" : "Create Folder"}
                                                     as="h4" 
                                                     header
                                                     onClick={() => setcreatefolder_open(true)}       
@@ -428,7 +428,7 @@ export const DataBank = ({mobile}) => {
                                             </Menu>
                                            
                                         </Grid.Column>
-                                        <Grid.Column width={8}>
+                                        <Grid.Column width={mobile ? 8 : 8}>
                                             <Grid>
                                                <Grid.Row>
                                                 <Grid.Column>
@@ -481,7 +481,7 @@ export const DataBank = ({mobile}) => {
                                                 <Grid>
                                                 <Grid.Row>  
                                                     <Grid.Column>
-                                                        <Header as="h4">
+                                                        <Header as={mobile ? "h5" : "h4"}>
                                                             <Icon name="folder" />
                                                             <Header.Content>
                                                                 All Folders ({folder.length})
@@ -493,14 +493,14 @@ export const DataBank = ({mobile}) => {
                                                             Refresh
                                                     </Grid.Column>*/}
                                                 </Grid.Row>
-                                                <Grid.Row columns={4}>
+                                                <Grid.Row columns={mobile ? 2 : 4}>
                                                     {folderList}
                                                 </Grid.Row>
                                                 </Grid>
                                                 }
                                             </Grid> 
                                         </Grid.Column>
-                                        <Grid.Column width={5}>
+                                        <Grid.Column width={mobile ? 4 : 5}>
                                             
                                             <Header dividing as="h2" textAlign="center" content="Folder Assets" />
                                                 {assets ?
