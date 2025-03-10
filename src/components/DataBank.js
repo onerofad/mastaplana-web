@@ -1,13 +1,19 @@
 import { useReducer, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Form, Button, Card, Container, Dropdown, Label, Menu, Header, Grid, Icon, Modal, Segment, List } from "semantic-ui-react"
-import { useCreateFolderMutation, useGetfoldersQuery, useGetUploadFiletoFolderQuery, useUploadFiletoFolderMutation } from "../features/api/apiSlice"
+import { Form, Button, Card, Container, Dropdown, Menu, Header, Grid, Icon, Modal, Segment, List } from "semantic-ui-react"
+import { useCreateFolderMutation, useDeleteFileMutation, useDeleteFolderMutation, useGetfoldersQuery, useGetUploadFiletoFolderQuery, useUploadFiletoFolderMutation } from "../features/api/apiSlice"
 
 const initialState = {
     size: undefined,
     open: false,
     size_upload: undefined,
-    open_upload: false
+    open_upload: false,
+    open_file: false,
+    size_file: undefined,
+    open_delete: false,
+    size_delete: undefined,
+    open_delete_fold: false,
+    size_delete_fold: undefined
 }
 
 function uploadReducer(state, action){
@@ -16,8 +22,14 @@ function uploadReducer(state, action){
             return {open: true, size: action.size}
         case 'open_upload':
             return {open_upload: true, size_upload: action.size_upload}
+        case 'open_file':
+            return {open_file: true, size_file: action.size_file}
+        case 'open_delete':
+            return {open_delete: true, size_delete: action.size_delete}
+        case 'open_delete_fold':
+            return {open_delete_fold: true, size_delete_fold: action.size_delete_fold}
         case 'close':
-            return {open: false, open_upload: false}
+            return {open: false, open_upload: false, open_file: false, open_delete: false, open_delete_fold: false}
         default:
             return new Error('An error has occurred')
     }
@@ -29,7 +41,13 @@ export const DataBank = ({mobile}) => {
     const navigate = useNavigate()
 
     const [state, dispatch] = useReducer(uploadReducer, initialState)
-    const {open, size, open_upload, size_upload} = state
+    const {
+            open, size, 
+            open_upload, size_upload, 
+            open_file, size_file,
+            open_delete, size_delete,
+            open_delete_fold, size_delete_fold
+          } = state
     
 
     const [loading, setloading] = useState(false)
@@ -93,12 +111,6 @@ export const DataBank = ({mobile}) => {
 
     }
 
-    const [open_portal, setopen_portal] = useState(false)
-
-    const handleopenPortal = () => setopen_portal(true)
-
-    const handleclosePortal = () => setopen_portal(false)
-
     const [folder_id, setfolder_id] = useState()
     
     const [folder_name, setfolder_name] = useState("")
@@ -111,9 +123,7 @@ export const DataBank = ({mobile}) => {
         dispatch({type: 'open_upload', size_upload: 'mini'})
     }
 
-    const [folder_count, setfolder_count] = useState(0)
-
-    const {data:folders, isSuccess, isFetching} = useGetfoldersQuery()
+    const {data:folders, isSuccess} = useGetfoldersQuery()
 
     const [createfolder_open, setcreatefolder_open] = useState(false)
 
@@ -124,33 +134,24 @@ export const DataBank = ({mobile}) => {
         folderList = folder.map(f => (
                 <Grid.Column>
                     <Card fluid>
-                        {/*<Card.Header style={{border: 0}} > 
-                            <Dropdown simple style={{float: 'right'}}>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item text="upload" icon="upload"
-                                        onClick={() => upload_open(f.id, f.f_name)}
-
-                                    />
-                                    <Dropdown.Item text="open" icon="folder"
-                                        onClick={() => open_folder(f.id, f.f_name)}
-                                    />
-                                </Dropdown.Menu>
-                            </Dropdown>       
-                        </Card.Header>*/}
                         <Card.Content>
                         <Dropdown simple style={{float: 'right'}}>
-                                <Dropdown.Menu>
-                                    <Dropdown.Item text="upload" icon="upload"
-                                        onClick={() => upload_open(f.id, f.f_name)}
-
-                                    />
-                                    <Dropdown.Item text="open" icon="folder"
-                                        onClick={() => open_folder(f.id, f.f_name)}
-                                    />
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <Dropdown.Menu>
+                                <Dropdown.Item text="upload" icon="upload"
+                                    onClick={() => upload_open(f.id, f.f_name)}
+                                />
+                                <Dropdown.Item text="open" icon="folder"
+                                    onClick={() => open_folder(f.id, f.f_name)}
+                                />
+                                <Dropdown.Item text="delete" icon="trash"
+                                    onClick={() => open_delete_folder(f.id, f.f_name)}
+                                />
+                            </Dropdown.Menu>
+                        </Dropdown>
                             <Icon name="folder" size="big" inverted color="green" />
-                            {f.f_name}
+                            <Header as="h4">
+                                {f.f_name}
+                            </Header>
                         </Card.Content>
                     </Card>
                     <br/>
@@ -169,10 +170,68 @@ export const DataBank = ({mobile}) => {
         setAssets(true)
     }
 
+    const [delete_folder_check, set_delete_folder_check] = useState("")
+    const [ removeFolder ] = useDeleteFolderMutation()
+
+    const delete_folder = async (id) => {
+        try{
+            setloading(true)
+            await removeFolder(id).unwrap()
+            setloading(false)
+            set_delete_folder_check("check")
+        }catch(error){
+            console.log("An error has occurred " + error)
+        }
+    }
+
+    const [file_id, setfile_id] = useState()
+
+    const [file_name, setfile_name] = useState("")
+
+    const [file_size, setfile_size] = useState()
+
+    const [file_link, setfile_link] = useState("")
+
+    const open_file_btn = (fid, fname, fsize, flink) => {
+        setfile_id(fid) 
+        setfile_name(fname)
+        setfile_size(fsize)
+        setfile_link(flink)
+    
+        dispatch({type: 'open_file', size_file: 'mini'})
+    }
+
+    const [fold_name, setfold_name] = useState("")
+    const [fold_id, setfold_id] = useState()
+
+    const open_delete_btn = (id, fname) => {
+        setfile_id(id)
+        setfile_name(fname)
+        dispatch({type: 'open_delete', size_delete: "mini"})
+    }
+
+    const open_delete_folder = (id, fname) => {
+        setfold_id(id)
+        setfold_name(fname)
+        dispatch({type: 'open_delete_fold', size_delete_fold: "mini"})
+    }
+
     if(isSuccess){
         const fileToFolder = folder_files.filter(f => f.folder_id === folder_id)
         fileToFolderList = fileToFolder.map(f => (
             <List.Item>
+                <List.Content floated="right">
+                    <Dropdown simple icon="ellipsis vertical" style={{float: 'right'}}>
+                        <Dropdown.Menu>
+                            <Dropdown.Item text="Save" icon="save"
+                                onClick={() => saveFileBtn(f.id, f.uploaded_link)}
+                            />
+                            <Dropdown.Item text="Delete" icon="trash"
+                                onClick={() => open_delete_btn(f.id, f.fileName)}
+                            />
+                            </Dropdown.Menu>
+                    </Dropdown>
+                </List.Content>
                 <List.Icon name="file" size="large" verticalAlign="middle" color="green" />
                 <List.Content>
                     <List.Header>{f.fileName}</List.Header>
@@ -181,9 +240,24 @@ export const DataBank = ({mobile}) => {
             </List.Item>   
         ))
     }
+
+    const [delete_btn_check, set_delete_btn_check] = useState("")
+    const [ removeFile ] = useDeleteFileMutation()
+
+    const delete_file = async (id) => {
+        try{
+            setloading(true)
+            await removeFile(id).unwrap()
+            setloading(false)
+            set_delete_btn_check("check")
+        }catch(error){
+            console.log("An error has occurred " + error)
+        }
+    }
     
-    const [activeItem, setactiveItem] = useState("Home")
-    const handleItemClick = (e, {name}) => setactiveItem(name.value)
+    
+    //const [activeItem, setactiveItem] = useState("Home")
+    //const handleItemClick = (e, {name}) => setactiveItem(name.value)
 
     const [file, setFile] = useState(null)
 
@@ -248,6 +322,34 @@ export const DataBank = ({mobile}) => {
             }
         }
 
+    }
+
+    let substr = "fl_attachment/"
+    const saveFileBtn = (id, link_text) => {
+        let file_string = link_text.substring(link_text.lastIndexOf(".")+1)
+        if(file_string === 'jpg'){
+            let pos = 49
+            window.open([link_text.slice(0, pos),substr, link_text.slice(pos)].join(''))
+        }else if(file_string === 'jpeg'){
+            let pos = 49
+            window.open([link_text.slice(0, pos),substr, link_text.slice(pos)].join(''))
+        }else if(file_string === 'txt'){
+            let pos = 47
+            window.open([link_text.slice(0, pos),substr, link_text.slice(pos)].join(''))
+        }else if(file_string === 'png'){
+            let pos = 49
+            window.open([link_text.slice(0, pos),substr, link_text.slice(pos)].join(''))
+        }else if(file_string === 'pdf'){
+            let pos = 49
+            window.open([link_text.slice(0, pos),substr, link_text.slice(pos)].join(''))
+        }
+       /*if(link_text.match("image")){
+            let pos = 49
+            window.open([link_text.slice(0, pos),substr, link_text.slice(pos)].join(''))
+       }else if(!link_text.match("image")){
+            let pos = 47
+            window.open([link_text.slice(0, pos),substr, link_text.slice(pos)].join(''))
+       }*/
     }
 
     return(
@@ -416,7 +518,7 @@ export const DataBank = ({mobile}) => {
                                                     </Grid.Row>
                                                     <Grid.Row>
                                                         <Grid.Column>
-                                                            <List relaxed="very" ordered divided verticalAlign="middle">
+                                                            <List selection relaxed="very" divided verticalAlign="middle">
                                                                 {fileToFolderList}
                                                             </List>
                                                         </Grid.Column>
@@ -452,7 +554,7 @@ export const DataBank = ({mobile}) => {
                        <Icon 
                             onClick={() => dispatch({type: 'close'})}
                             link name="close" 
-                            size="tiny"
+                            size="small"
                             style={{float: 'right'}} 
                         />
                     </Modal.Header>
@@ -473,7 +575,7 @@ export const DataBank = ({mobile}) => {
                        <Icon 
                             onClick={() => dispatch({type: 'close'})}
                             link name="close" 
-                            size="mini"
+                            size="small"
                             style={{float: 'right'}} 
                         />
                     </Modal.Header>
@@ -499,6 +601,118 @@ export const DataBank = ({mobile}) => {
                                 Upload
                             </Button>
                         </Form>
+                    </Modal.Content>
+                </Modal>
+                <Modal
+                    size={size_file}
+                    open={open_file}
+                >
+                    <Modal.Header >
+                       File options
+                       <Icon 
+                            onClick={() => dispatch({type: 'close'})}
+                            link name="close" 
+                            size="small"
+                            style={{float: 'right'}} 
+                        />
+                    </Modal.Header>
+                    <Modal.Content>
+                        <Header>
+                            <Icon size="large" name="file" />
+                            <Header.Content>
+                                {file_name}
+                            </Header.Content>
+                        </Header>
+                    </Modal.Content>
+                    <Modal.Content>
+                            <Button 
+                                icon="save"
+                                compact 
+                                content="Save"
+                                as="a" 
+                                onClick={saveFileBtn(file_id, file_link)}
+                            />
+                            
+                            <Button 
+                                icon="share"
+                                compact
+                                content="Share"
+                            />
+                            <Button
+                                icon="trash"
+                                compact
+                                content="Delete"
+                                loading={loading}
+                                onClick={() => delete_file(file_id)}
+                            />
+                    </Modal.Content>
+                </Modal>
+                <Modal
+                    open={open_delete}
+                    size={size_delete}
+                >
+                    <Modal.Header>
+                        Delete File
+                        <Icon 
+                            style={{float: 'right'}} 
+                            name="close" 
+                            size="small" 
+                            link={true}
+                            onClick={() => dispatch({type: 'close'})}
+                        />
+                    </Modal.Header>
+                    <Modal.Content>
+                        <Header>
+                            Delete File {file_name} ?
+                        </Header>
+                    </Modal.Content>
+                    <Modal.Content>
+                        <Button 
+                            positive 
+                            content="Yes" 
+                            onClick={() => delete_file(file_id)}
+                            loading={loading}
+                            icon={delete_btn_check}
+                        />
+                        <Button 
+                            negative 
+                            content="No" 
+                            onClick={() => dispatch({type: 'close'})}
+                        />
+                    </Modal.Content>
+                </Modal>
+                <Modal
+                    open={open_delete_fold}
+                    size={size_delete_fold}
+                >
+                    <Modal.Header>
+                        Delete Folder
+                        <Icon 
+                            style={{float: 'right'}} 
+                            name="close" 
+                            size="small" 
+                            onClick={() => dispatch({type: 'close'}) }
+                            link={true}
+                        />
+                    </Modal.Header>
+                    <Modal.Content>
+                        <Header>
+                            Delete Folder {fold_name} ?
+                        </Header>
+                    </Modal.Content>
+                    <Modal.Content>
+                        <Button 
+                            positive 
+                            content="Yes" 
+                            loading={loading}
+                            icon={delete_folder_check}
+                            onClick={() => delete_folder(fold_id)}
+                        />
+                        <Button 
+                            negative 
+                            content="No" 
+                            onClick={() => dispatch({type: 'close'})}
+                        />
                     </Modal.Content>
                 </Modal>
         </Segment>

@@ -183,6 +183,19 @@ export const apiSlice = createApi({
         getUploadFiletoFolder: builder.query({
             query: () => '/upload_file_to_folders'
         }),
+        deleteFile: builder.mutation({
+            query: (id) => ({
+                url: `/upload_file_to_folders/${id}`,
+                method: 'DELETE'
+            })
+        }),
+        deleteFolder: builder.mutation({
+            query: (id) => ({
+                url: `/create_folders/${id}`,
+                method: 'DELETE'
+            })
+        }),
+
     })
     
 })
@@ -203,5 +216,6 @@ export const {
     useAcceptMembershipMutation, useDeclineMembershipMutation,
     useSetAlarmMutation, useGetAlarmsQuery, useRemoveAlarmMutation,
     useCreateFolderMutation, useGetfoldersQuery,
-    useUploadFiletoFolderMutation, useGetUploadFiletoFolderQuery
+    useUploadFiletoFolderMutation, useGetUploadFiletoFolderQuery,
+    useDeleteFileMutation, useDeleteFolderMutation
 } = apiSlice
