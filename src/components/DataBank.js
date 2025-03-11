@@ -223,20 +223,28 @@ export const DataBank = ({mobile}) => {
                 <List.Content floated="right">
                     <Dropdown simple icon="ellipsis vertical" style={{float: 'right'}}>
                         <Dropdown.Menu>
-                            <Dropdown.Item text="Save" icon="save"
+                            <Dropdown.Item text="Download" icon="save"
                                 onClick={() => saveFileBtn(f.id, f.uploaded_link)}
                             />
                             <Dropdown.Item text="Delete" icon="trash"
                                 onClick={() => open_delete_btn(f.id, f.fileName)}
                             />
-                            </Dropdown.Menu>
+                        </Dropdown.Menu>
                     </Dropdown>
                 </List.Content>
                 <List.Icon name="file" size="large" verticalAlign="middle" color="green" />
-                <List.Content>
-                    <List.Header>{f.fileName}</List.Header>
-                    <List.Description> {f.fileSize/1000} mb</List.Description>
-                </List.Content>
+                {
+                    (f.fileName.length <= 18) ?
+                        <List.Content>
+                            <List.Header>{f.fileName}</List.Header>
+                            <List.Description> {f.fileSize/1000} mb</List.Description>
+                        </List.Content>
+                    :
+                        <List.Content>
+                            <List.Header>{f.fileName.substr(0, 18)}...</List.Header>
+                            <List.Description> {f.fileSize/1000} mb</List.Description>
+                        </List.Content>
+                }
             </List.Item>   
         ))
     }
@@ -515,10 +523,10 @@ export const DataBank = ({mobile}) => {
                                                         </Grid.Column>
                                                     </Grid.Row>
                                                     <Grid.Row>
-                                                        <Grid.Column>
+                                                        <Grid.Column>          
                                                             <List selection relaxed="very" divided verticalAlign="middle">
                                                                 {fileToFolderList}
-                                                            </List>
+                                                            </List>  
                                                         </Grid.Column>
                                                     </Grid.Row>
                                                     </Grid>

@@ -213,6 +213,9 @@ const Dashboard = ({mobile}) => {
                                     inline
                                 >
                                   <Dropdown.Menu>
+                                  <Dropdown.Item onClick={() => navigate("/support")}>
+                                        Support
+                                    </Dropdown.Item>
                                     <Dropdown.Item onClick={() => navigate("/signin")}>
                                         Log out
                                     </Dropdown.Item>

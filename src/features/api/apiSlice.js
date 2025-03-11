@@ -195,6 +195,13 @@ export const apiSlice = createApi({
                 method: 'DELETE'
             })
         }),
+        submitMessage: builder.mutation({
+            query: item => ({
+                url: `support_messages/`,
+                method: 'POST',
+                body: item
+            })
+        }),
 
     })
     
@@ -217,5 +224,6 @@ export const {
     useSetAlarmMutation, useGetAlarmsQuery, useRemoveAlarmMutation,
     useCreateFolderMutation, useGetfoldersQuery,
     useUploadFiletoFolderMutation, useGetUploadFiletoFolderQuery,
-    useDeleteFileMutation, useDeleteFolderMutation
+    useDeleteFileMutation, useDeleteFolderMutation,
+    useSubmitMessageMutation
 } = apiSlice
