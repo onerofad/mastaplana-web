@@ -18,6 +18,7 @@ import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 import { useRemoveAlarmMutation } from './features/api/apiSlice';
 import { DataBank } from './components/DataBank';
 import { Support } from './components/Support';
+import { SendFile } from './components/SendFile';
 
 const { MediaContextProvider, Media } = createMedia({
     breakpoints: {
@@ -146,6 +147,7 @@ const App = () => {
             <Route path='/notice_center' element={<NoticeCenter mobile />}  />
             <Route path='/data_bank' element={<DataBank mobile />}  />
             <Route path='/support' element={<Support mobile />}  />
+            <Route path='/send_file' element={<SendFile mobile />}  />
 
           </Routes>
         </BrowserRouter>
@@ -168,6 +170,8 @@ const App = () => {
             <Route path='/notice_center' element={<NoticeCenter />} />
             <Route path='/data_bank' element={<DataBank />}  />
             <Route path='/support' element={<Support />}  />
+            <Route path='/send_file' element={<SendFile />}  />
+
 
 
           </Routes>
