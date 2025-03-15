@@ -417,6 +417,8 @@ export const DataBank = ({mobile}) => {
                                 <Segment vertical style={{padding: 20, borderRadius: 10, backgroundColor: '#fff'}}>
                                 <Grid divided>
                                     <Grid.Row>
+                                        {
+                                            mobile ? <></> :
                                         <Grid.Column width={mobile ? 4 : 3}>
                                             <Header dividing as={mobile ? "h4" : "h2"} content="Media" />
                                             <Menu size={mobile ? "mini" : ''} secondary vertical>
@@ -436,7 +438,8 @@ export const DataBank = ({mobile}) => {
                                             </Menu>
                                            
                                         </Grid.Column>
-                                        <Grid.Column width={mobile ? 12 : 8}>
+                                        }
+                                        <Grid.Column width={mobile ? 16 : 8}>
                                             <Grid>
                                                <Grid.Row>
                                                 <Grid.Column>
@@ -447,14 +450,8 @@ export const DataBank = ({mobile}) => {
                                                     createfolder_open ?
                                                     <Grid>
                                                     <Grid.Row>
-                                                        <Grid.Column>
-                                                            <Header as={mobile ? "h5" : "h4"}>
-                                                                <Icon color="green" name="folder" size="big" />
-                                                                {/*<Header.Content>
-                                                                    Create Folder
-                                                                </Header.Content>
-                                                                */}
-                                                            </Header>
+                                                        <Grid.Column>                                                            
+                                                            <Icon color="green" name="folder" size="massive" />
                                                         </Grid.Column>
                                                     </Grid.Row>
                                                     <Grid.Row>
@@ -474,6 +471,18 @@ export const DataBank = ({mobile}) => {
                                                     </Grid.Row>
                                                     <Grid.Row>
                                                         <Grid.Column>
+                                                        {
+                                                        mobile ?
+                                                        <Button
+                                                                onClick={() => setcreatefolder_open(false)}       
+                                                                size="big" 
+                                                                color="green" 
+                                                                content="View"
+                                                                floated="left" 
+                                                            />
+                                                            :
+                                                            <></>
+                                                        }
                                                             <Button
                                                                 onClick={() => clickFolder()} 
                                                                 size="big" 
@@ -505,6 +514,21 @@ export const DataBank = ({mobile}) => {
                                                 <Grid.Row columns={mobile ? 2 : 4}>
                                                     {folderList}
                                                 </Grid.Row>
+                                                { mobile ? 
+                                                <Grid.Row>
+                                                    <Grid.Column>
+                                                    <Button
+                                                        onClick={() => setcreatefolder_open(true)} 
+                                                        size="big" 
+                                                        color="green" 
+                                                        circular 
+                                                        icon="plus"
+                                                        floated="right" 
+                                                    />
+                                                    </Grid.Column>
+                                                </Grid.Row>:
+                                                <></>
+                                                }
                                                 </Grid>
                                                 }
                                             </Grid> 
