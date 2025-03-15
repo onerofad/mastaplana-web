@@ -1,5 +1,5 @@
 import { Grid, Segment, Container, Icon, Header, Form, Button, Message, Modal, List } from "semantic-ui-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import React, { useReducer, useState } from "react"
 
 import { useCallback } from 'react'
@@ -9,10 +9,25 @@ const initialState = {
     open: false,
     size: undefined,
     open_error: false,
-    size_error: undefined
-
+    size_error: undefined,
+ 
 }
 
+const initialState2 = {
+    open_signup: false,
+    size_signup: undefined
+}
+
+function dropReducer2(state, action){
+    switch(action.type){
+        case 'open_signup':
+            return {open_signup: true, size_signup: action.size_signup}
+        case 'close':
+            return {open_signup: false}
+        default:
+            return new Error('An error has occured')
+    }
+}
 function dropReducer(state, action){
     switch(action.type){
         case 'open':
@@ -27,11 +42,19 @@ function dropReducer(state, action){
 }
 
 function UploadDropzone({onDrop}){
+
+    const navigate = useNavigate()
+
+    const [state, dispatch] = useReducer(dropReducer2, initialState2)
+    
+    const {open_signup, size_signup} = state
+
     const onDropcallback = useCallback((acceptedFiles, rejectedFiles) => {
         onDrop(acceptedFiles)
 
         rejectedFiles.forEach(rejectedFile => {
-            alert(`${rejectedFile.file.name} is rejected`)
+            //alert(`${rejectedFile.file.name} is rejected`)
+            dispatch({type: 'open_signup', size_signup: 'mini'})
         })
     }, [onDrop])
 
@@ -42,7 +65,7 @@ function UploadDropzone({onDrop}){
             'audio/': [],
             'video/': []
         },
-        maxSize: 1024 * 100,
+        maxSize: 1024 * 1000 * 20,
         multiple: false
     })
     return(
@@ -58,6 +81,33 @@ function UploadDropzone({onDrop}){
             <Button positive>
                 Add Document
             </Button>
+            <Modal
+                    open={open_signup}
+                    size={size_signup}
+                >
+                    <Modal.Header>
+                        Sign up
+                    </Modal.Header>
+                    <Modal.Content>
+                        <Message color="green">
+                            Your upload exceeds 20MB.
+                            You need to sign up to send 
+                            files above 20MB
+
+                        </Message>
+                    </Modal.Content>
+                    <Modal.Actions style={{textAlign: 'center'}}>
+                        <Button positive onClick={() => navigate("/signup")}>
+                            Sign up
+                        </Button>
+                        <Button 
+                            negative 
+                            onClick={() => dispatch({type: 'close'})}
+                        >
+                            close
+                        </Button>
+                    </Modal.Actions>
+                </Modal>
         </Segment>
     )
     
@@ -67,7 +117,13 @@ export const SendFile = ({mobile}) => {
 
     const [state, dispatch] = useReducer(dropReducer, initialState)
 
-    const {open, size, open_error, size_error} = state
+    const navigate = useNavigate()
+
+    const {
+            open, size, 
+            open_error, size_error,
+        } 
+        = state
 
     const [imgFiles, setimgFiles] =  useState([])
 
@@ -136,7 +192,7 @@ export const SendFile = ({mobile}) => {
         <Segment vertical style={{backgroundColor: '#133467', margin: mobile ? 10 : 40}}>
             <Grid>
                 <Grid.Row>
-                    <Grid.Column width={6} textAlign="left" verticalAlign="middle">
+                    <Grid.Column width={mobile ? 5 : 6} textAlign="left" verticalAlign="middle">
                         <Link style={{ fontSize: 20, color: '#fff'}} to="/signin">
                             <Icon inverted name="angle left" color="green" size={mobile ? 'large' : 'big'} />
                                 Sign in
@@ -155,7 +211,7 @@ export const SendFile = ({mobile}) => {
                             }}
                     />
                     </Grid.Column>
-                    <Grid.Column textAlign="right" width={4} verticalAlign="middle">
+                    <Grid.Column textAlign="right" width={mobile ? 5 : 4} verticalAlign="middle">
                         <Header inverted content={ mobile ? 'Sign up' : 'Member Sign up'} color="#fff" />
                     </Grid.Column>
                     </Grid.Row>   

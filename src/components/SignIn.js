@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Grid, Header, Segment, Button, Container, Form, Image } from "semantic-ui-react"
+import { Grid, Header, Segment, Button, Container, Form, Image, Icon } from "semantic-ui-react"
 import { useGetUsersQuery } from "../features/api/apiSlice"
  
 const SignIn = ({mobile}) => {
@@ -52,6 +52,14 @@ const SignIn = ({mobile}) => {
         <Container>
         <Segment vertical style={{backgroundColor: '#133467', margin: mobile ? 20 : 40}}>
                 <Grid textAlign="center" style={{height: mobile ? '60vh' : '75vh'}} verticalAlign="middle">
+                    <Grid.Row>
+                        <Grid.Column textAlign="left" verticalAlign="middle">
+                            <Link style={{ fontSize: 20, color: '#fff'}} to="/send_file">
+                                <Icon inverted name="angle left" color="green" size={mobile ? 'large' : 'big'} />
+                                    Send File
+                            </Link>
+                        </Grid.Column>
+                    </Grid.Row>
                     <Grid.Row >
                         <Grid.Column style={{ maxWidth: 450}}>
                             <Form size="big">
