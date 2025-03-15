@@ -49,7 +49,7 @@ function UploadDropzone({onDrop}){
         <Segment style={{maxHeight: 100}} placeholder {...getRootProps()}>
             <Header icon>
              <input {...getInputProps()} />
-             <Icon name="pdf file outline" />
+             <Icon name="file outline" />
              {isDragActive ?
                 <p>Drag the files here</p>:
                 <p>Drag and drop the files here or click to select file</p>
