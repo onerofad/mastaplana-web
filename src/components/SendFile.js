@@ -1,10 +1,9 @@
-import { Grid, Segment, Container, Input, Icon, Header, Form, Button, Message, Modal } from "semantic-ui-react"
+import { Grid, Segment, Container, Icon, Header, Form, Button, Message, Modal, List } from "semantic-ui-react"
 import { Link } from "react-router-dom"
 import React, { useReducer, useState } from "react"
 
 import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { accelerate } from "@cloudinary/url-gen/actions/effect"
 
 const initialState = {
     open: false,
@@ -40,6 +39,8 @@ function UploadDropzone({onDrop}){
         onDrop: onDropcallback, 
         accept: {
             'image/': [],
+            'audio/': [],
+            'video/': []
         },
         maxSize: 1024 * 100,
         multiple: false
@@ -70,7 +71,7 @@ export const SendFile = ({mobile}) => {
 
     const [imgFiles, setimgFiles] =  useState([])
 
-    const [imgFilesError, setimgFilesError] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const [email, setEmail] = useState("")
     const [emailError, setemailError] = useState(false)
@@ -97,6 +98,7 @@ export const SendFile = ({mobile}) => {
         }else if(imgFiles.length === 0){
             dispatch({type: 'open_error', size_error: "mini"})
         }else{
+        setLoading(true)
         const uploadedImages = []
         const cloudName = "du3ck2joa"
         for(const file of imgFiles){
@@ -117,6 +119,7 @@ export const SendFile = ({mobile}) => {
 
                      const data = await response.json()
                      uploadedImages.push(data.secure_url)
+                     setLoading(false)
                      dispatch({type: 'open', size: "mini"})
 
             }catch(error){
@@ -190,20 +193,31 @@ export const SendFile = ({mobile}) => {
                                                     {
                                                         imgFiles.length === 0 ?
                                                             <UploadDropzone  onDrop={handleFileDrop} /> :
-                                                            <div>
+                                                            <Segment>
+                                                                <List>
                                                             {
+                                                                
                                                                 imgFiles.map((file, i) => 
-                                                                    <img key={i} src={file.preview}
-                                                                        alt="image" style={{width: '200px', height: '200px', objectFit: 'cover'}}
-                                                                />
+                                                                    <List.Item key={i}>
+                                                                        <List.Content floated="right">
+                                                                            <Icon size="large" color="green" name="check" />
+                                                                        </List.Content>
+                                                                        <List.Content>
+                                                                            <Header>
+                                                                                {file.name}
+                                                                            </Header>
+                                                                        </List.Content>
+                                                                    </List.Item>
                                                                 )
+                                                                
                                                             }
-                                                            </div>
+                                                                </List>
+                                                            </Segment>
 
 
                                                     }
                                                     <Form onSubmit={handleSubmit}>
-                                                        <Button positive type="submit">
+                                                        <Button loading={loading} positive type="submit">
                                                             Send File
                                                         </Button>
                                                         <Button 
