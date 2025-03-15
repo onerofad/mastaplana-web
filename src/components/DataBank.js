@@ -125,7 +125,7 @@ export const DataBank = ({mobile}) => {
 
     const {data:folders, isSuccess} = useGetfoldersQuery()
 
-    const [createfolder_open, setcreatefolder_open] = useState(false)
+    const [createfolder_open, setcreatefolder_open] = useState(true)
 
     let folderList
     let folder = []
@@ -421,16 +421,16 @@ export const DataBank = ({mobile}) => {
                                             <Header dividing as={mobile ? "h4" : "h2"} content="Media" />
                                             <Menu size={mobile ? "mini" : ''} secondary vertical>
                                                 <Menu.Item 
-                                                    name="Home" 
+                                                    name="Create Folder"
                                                     as="h4"
                                                     header
-                                                    onClick={() => setcreatefolder_open(false)}
+                                                    onClick={() => setcreatefolder_open(true)}
                                                 />
                                                 <Menu.Item 
-                                                    name= {mobile ? "Folder" : "Create Folder"}
+                                                    name= "View Folders"
                                                     as="h4" 
                                                     header
-                                                    onClick={() => setcreatefolder_open(true)}       
+                                                    onClick={() => setcreatefolder_open(false)}       
                                                 />
 
                                             </Menu>
@@ -449,10 +449,11 @@ export const DataBank = ({mobile}) => {
                                                     <Grid.Row>
                                                         <Grid.Column>
                                                             <Header as={mobile ? "h5" : "h4"}>
-                                                                <Icon name="folder" />
-                                                                <Header.Content>
+                                                                <Icon color="green" name="folder" size="big" />
+                                                                {/*<Header.Content>
                                                                     Create Folder
                                                                 </Header.Content>
+                                                                */}
                                                             </Header>
                                                         </Grid.Column>
                                                     </Grid.Row>
@@ -604,8 +605,19 @@ export const DataBank = ({mobile}) => {
                                  color="green"
                                  loading={loading}
                             >
-                                <Icon name={check} />
-                                Upload
+                                {
+                                    (check ? 
+                                        <>
+                                         <Icon name={check}  />
+                                         Upload
+                                        </>
+                                        :
+                                        <>
+                                         Upload
+                                        </>
+                                
+                                        )
+                                }
                             </Button>
                         </Form>
                     </Modal.Content>

@@ -156,8 +156,19 @@ export const Support = ({mobile}) => {
                                                                 loading={loading}
                                                                 icon
                                                             >
-                                                                <Icon name={check} />
-                                                                SEND
+                                                                {
+                                                                (check ? 
+                                                                    <>
+                                                                        <Icon name={check}  />
+                                                                        SEND
+                                                                    </>
+                                                                    :
+                                                                    <>
+                                                                        SEND
+                                                                    </>
+
+                                                                )
+                                                            }
                                                             </Button>
                                                         </Form.Field>
                                                     </Form>
